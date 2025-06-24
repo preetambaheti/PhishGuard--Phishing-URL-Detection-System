@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PhishGuard - Advanced Phishing Protection</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0d0c22 0%, #1a1635 100%);
+      color: white;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background: linear-gradient(45deg, #0c0cf4, #4a4aff);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(12, 12, 244, 0.4);
+    }
+    
+    .hero-section {
+      text-align: center;
+      padding: 100px 20px 60px;
+    }
+
+    .hero-section h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      background: linear-gradient(45deg, #fff, #a5a4c2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-section .subtitle {
+      font-size: 18px;
+      color: #a5a4c2;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .cta-button {
+      background: linear-gradient(45deg, #0c0cf4, #4a4aff);
+      color: white;
+      border: none;
+      padding: 18px 40px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(12, 12, 244, 0.4);
+    }
+    
+    .features-section {
+        padding: 60px 20px;
+    }
+
+    .features-section h2 {
+        text-align: center;
+        font-size: 32px;
+        margin-bottom: 40px;
+        font-weight: 600;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 30px;
+        border-radius: 16px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .feature-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+        color: #4a4aff;
+    }
+
+    .feature-card h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        font-size: 15px;
+        color: #a5a4c2;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 768px) {
+        .hero-section h1 {
+            font-size: 36px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">🛡️ PhishGuard</div>
+    <nav>
+      <!-- This button simply reloads the home page -->
+      <a href="index.html"><button class="nav-btn">Home</button></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero-section">
+      <div class="container">
+        <h1>Protect Yourself From Online Threats</h1>
+        <p class="subtitle">
+          PhishGuard offers a powerful, multi-layered defense against phishing attacks by leveraging machine learning, real-time threat intelligence, and deep content analysis.
+        </p>
+        <!-- This is the main link to your scanner page -->
+        <a href="main.html" class="cta-button">Analyze a URL Now</a>
+      </div>
+    </section>
+    
+    <section class="features-section">
+        <div class="container">
+            <h2>How We Protect You</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Machine Learning</h3>
+                    <p>Our trained model analyzes URL structure and patterns to predict the probability of phishing with high accuracy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>VirusTotal Reputation</h3>
+                    <p>We check the URL against 90+ antivirus scanners and blocklist services via VirusTotal for real-time threat data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>SSL & Infrastructure</h3>
+                    <p>We inspect the SSL certificate, domain age, and DNS records for signs of a hastily-created or suspicious setup.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Page Content Analysis</h3>
+                    <p>The site's content is scanned for password fields, login forms, and suspicious keywords common in phishing pages.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 PhishGuard. Advanced threat detection and analysis.</p>
+  </footer>
+
+</body>
+</html>

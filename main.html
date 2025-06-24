@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PhishGuard - Enhanced Security Analysis</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: linear-gradient(135deg, #0d0c22 0%, #1a1635 100%); color: white; line-height: 1.6; min-height: 100vh; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .logo { font-weight: bold; font-size: 20px; display: flex; align-items: center; gap: 8px; }
+    .nav-btn { background: linear-gradient(45deg, #0c0cf4, #4a4aff); color: white; border: none; padding: 10px 20px; border-radius: 25px; font-size: 14px; cursor: pointer; transition: all 0.3s ease; }
+    .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(12, 12, 244, 0.4); }
+    .scanner-section { text-align: center; padding: 60px 20px 40px; }
+    h1 { font-size: 32px; margin-bottom: 30px; font-weight: 600; background: linear-gradient(45deg, #fff, #a5a4c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .url-box { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+    .url-input { width: 450px; padding: 16px 24px; border-radius: 50px; border: 2px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); color: white; font-size: 16px; transition: all 0.3s ease; }
+    .url-input:focus { outline: none; border-color: #0c0cf4; box-shadow: 0 0 20px rgba(12, 12, 244, 0.3); }
+    .url-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+    .scan-btn { background: linear-gradient(45deg, #0c0cf4, #4a4aff); color: white; border: none; padding: 16px 32px; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+    .scan-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(12, 12, 244, 0.4); }
+    .scan-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .info-text { font-size: 14px; color: #a5a4c2; margin-bottom: 40px; }
+    .spinner { border: 4px solid rgba(255, 255, 255, 0.1); border-left-color: #0c0cf4; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .results-container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+    .final-verdict { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 30px; margin-bottom: 30px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); }
+    .risk-score { font-size: 48px; font-weight: bold; margin: 15px 0; }
+    .risk-low { color: #4ade80; } .risk-medium { color: #fbbf24; } .risk-high { color: #ef4444; }
+    
+    /* --- THIS IS THE MODIFIED SECTION --- */
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Forces a 2-column layout */
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    /* --- END OF MODIFIED SECTION --- */
+
+    .component-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 16px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.1); transition: transform 0.3s ease; display: flex; flex-direction: column; }
+    .component-card:hover { transform: translateY(-5px); }
+    .component-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+    .component-icon { font-size: 24px; }
+    .component-title { font-size: 18px; font-weight: 600; }
+    .score-display { font-size: 24px; font-weight: bold; margin: 10px 0; }
+    .details-wrapper { margin-top: 10px; }
+    .detail-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .detail-item:last-child { border-bottom: none; }
+    .detail-label { color: #a5a4c2; font-size: 14px; }
+    .detail-value { font-weight: 500; text-align: right; max-width: 70%; word-break: break-word; }
+    .risk-factors { margin-top: 15px; }
+    .risk-factor { background: rgba(239, 68, 68, 0.1); color: #fca5a5; padding: 5px 10px; border-radius: 15px; font-size: 12px; margin: 5px 5px 5px 0; display: inline-block; }
+    .green-check { color: #4ade80; } .red-cross { color: #ef4444; } .yellow-warn { color: #fbbf24; }
+    .weights-info { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 16px; padding: 20px; margin-top: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
+    .weight-bar { display: flex; align-items: center; margin: 10px 0; }
+    .weight-label { width: 100px; font-size: 14px; color: #a5a4c2; }
+    .weight-value { flex: 1; height: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; margin: 0 10px; position: relative; overflow: hidden; }
+    .weight-fill { height: 100%; background: linear-gradient(45deg, #0c0cf4, #4a4aff); border-radius: 10px; transition: width 0.3s ease; }
+    .weight-percentage { font-size: 14px; font-weight: 600; min-width: 40px; }
+    .error-message { background: rgba(239, 68, 68, 0.1); color: #fca5a5; padding: 15px; border-radius: 10px; margin: 20px 0; text-align: center; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .loading-text { text-align: center; color: #a5a4c2; margin-top: 15px; }
+    footer { text-align: center; padding: 40px 20px; color: #666; margin-top: 60px; }
+    
+    /* --- ADDED THIS SECTION FOR RESPONSIVE DESIGN --- */
+    @media (max-width: 768px) {
+      .url-input { width: 100%; max-width: 400px; } 
+      .url-box { flex-direction: column; } 
+      .components-grid { 
+        grid-template-columns: 1fr; /* On mobile, stack them in a single column */
+      } 
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">🛡️ PhishGuard</div>
+    <nav><a href="index.html"><button class="nav-btn">Home</button></a></nav>
+  </header>
+
+  <section class="scanner-section">
+    <div class="container">
+      <h1>Advanced Phishing Protection</h1>
+      <div class="url-box">
+        <input type="url" id="url-input" class="url-input" placeholder="Enter URL to analyze (e.g., https://example.com)" />
+        <button id="scan-btn" class="scan-btn">Analyze URL</button>
+      </div>
+      <p class="info-text">
+        Multi-layered analysis using ML, SSL, VirusTotal reputation, and page content
+      </p>
+    </div>
+  </section>
+
+  <div id="results-container" class="results-container"></div>
+
+  <footer><p>© 2025 PhishGuard. Advanced threat detection and analysis.</p></footer>
+
+  <script>
+    const urlInput = document.getElementById('url-input');
+    const scanBtn = document.getElementById('scan-btn');
+    const resultsContainer = document.getElementById('results-container');
+
+    scanBtn.addEventListener('click', analyzeUrl);
+    urlInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') analyzeUrl(); });
+
+    async function analyzeUrl() {
+      const url = urlInput.value.trim();
+      if (!url) { showError('Please enter a URL to analyze'); return; }
+      showLoading(url);
+      scanBtn.disabled = true;
+
+      try {
+        const response = await fetch('/scan', {
+          method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ url })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Analysis failed');
+        displayResults(data);
+      } catch (error) {
+        showError(`Analysis failed: ${error.message}`);
+      } finally {
+        scanBtn.disabled = false;
+      }
+    }
+
+    function showLoading(url) {
+      resultsContainer.innerHTML = `<div class="final-verdict"><div class="spinner"></div><p class="loading-text">Analyzing <strong>${url}</strong>...</p><p class="loading-text">This is fast for known URLs, but may take longer for new ones.</p></div>`;
+    }
+
+    function showError(message) {
+      resultsContainer.innerHTML = `<div class="error-message"><strong>❌ Error:</strong> ${message}</div>`;
+    }
+
+    function displayResults(data) {
+      const { final_assessment, components } = data;
+      const riskClass = final_assessment.risk_level === 'high' ? 'risk-high' : final_assessment.risk_level === 'medium' ? 'risk-medium' : 'risk-low';
+
+      resultsContainer.innerHTML = `
+        <div class="final-verdict">
+          <h2>🎯 Final Security Assessment</h2>
+          <div class="risk-score ${riskClass}">${final_assessment.risk_percentage}% Risk</div>
+          <h3>${final_assessment.verdict}</h3>
+          <p style="margin-top: 15px; font-size: 16px;">${final_assessment.recommendation}</p>
+          <p style="color: #a5a4c2; margin-top: 10px;">Analyzed: <span style="word-break: break-all;">${data.url}</span></p>
+        </div>
+
+        <div class="components-grid">
+          ${createComponentCard('🧠', 'Machine Learning Analysis', components.ml_analysis, 'ml')}
+          ${createComponentCard('🔒', 'SSL & Infrastructure Analysis', components.ssl_analysis, 'ssl')}
+          ${createComponentCard('🌐', 'VirusTotal Reputation', components.vt_analysis, 'vt')}
+          ${createComponentCard('📝', 'Page Content Analysis', components.content_analysis, 'content')}
+        </div>
+
+        <div class="weights-info">
+          <h3 style="margin-bottom: 15px;">📊 Scoring Breakdown</h3>
+          ${createWeightBar('ML Model', final_assessment.component_scores.ml_score, final_assessment.scoring_weights.ml_weight)}
+          ${createWeightBar('SSL/DNS', final_assessment.component_scores.ssl_score, final_assessment.scoring_weights.ssl_weight)}
+          ${createWeightBar('VirusTotal', final_assessment.component_scores.vt_score, final_assessment.scoring_weights.vt_weight)}
+          ${createWeightBar('Content', final_assessment.component_scores.content_score, final_assessment.scoring_weights.content_weight)}
+          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <strong>Final Risk Score: ${final_assessment.final_risk_score} / 1.0</strong>
+          </div>
+        </div>`;
+    }
+
+    function createComponentCard(icon, title, analysis, type) {
+      if (analysis.error) {
+        return `<div class="component-card"><div class="component-header"><span class="component-icon">${icon}</span><span class="component-title">${title}</span></div><div class="error-message" style="margin-top: auto; text-align: left;">${analysis.error}</div></div>`;
+      }
+
+      let detailsHtml = '';
+      
+      if (type === 'ml') {
+        detailsHtml = `<div class="detail-item"><span class="detail-label">Phishing Confidence:</span><span class="detail-value">${analysis.confidence}</span></div>`;
+      } else if (type === 'ssl') {
+        detailsHtml = `<div class="detail-item"><span class="detail-label">SSL Status:</span><span class="detail-value">${analysis.ssl_status}</span></div><div class="detail-item"><span class="detail-label">Certificate Expired:</span><span class="detail-value">${analysis.ssl_expired ? 'Yes 🔴' : 'No 🟢'}</span></div><div class="detail-item"><span class="detail-label">Registrar:</span><span class="detail-value">${analysis.whois_registrar || 'N/A'}</span></div>`;
+      } else if (type === 'vt') {
+        const stats = analysis.details.stats || {};
+        const total = Object.values(stats).reduce((a, b) => a + b, 0);
+        detailsHtml = `
+          <div class="detail-item"><span class="detail-label">Malicious:</span><span class="detail-value red-cross">${stats.malicious || 0} / ${total || 'N/A'}</span></div>
+          <div class="detail-item"><span class="detail-label">Suspicious:</span><span class="detail-value yellow-warn">${stats.suspicious || 0} / ${total || 'N/A'}</span></div>
+          <div class="detail-item"><span class="detail-label">Harmless:</span><span class="detail-value green-check">${stats.harmless || 0} / ${total || 'N/A'}</span></div>
+        `;
+      } else if (type === 'content') {
+        detailsHtml = `<div class="detail-item"><span class="detail-label">Password Field:</span><span class="detail-value">${analysis.details.has_password_field ? '<span class="red-cross">Yes ❗</span>' : '<span class="green-check">No ✔️</span>'}</span></div><div class="detail-item"><span class="detail-label">Submission Form:</span><span class="detail-value">${analysis.details.has_form ? 'Yes' : 'No'}</span></div>`;
+      }
+      
+      if (analysis.risk_factors && analysis.risk_factors.length > 0) {
+        detailsHtml += `<div class="risk-factors"><div class="detail-label" style="margin-bottom: 8px;">Key Findings:</div>${analysis.risk_factors.map(factor => `<span class="risk-factor">${factor}</span>`).join('')}</div>`;
+      }
+
+      const riskClass = analysis.risk_score > 0.7 ? 'risk-high' : analysis.risk_score > 0.4 ? 'risk-medium' : 'risk-low';
+      return `<div class="component-card"><div class="component-header"><span class="component-icon">${icon}</span><span class="component-title">${title}</span></div><div class="score-display ${riskClass}">${(analysis.risk_score * 100).toFixed(0)}% <span style="font-size: 16px; font-weight: 500;">Risk</span></div><div class="details-wrapper">${detailsHtml}</div></div>`;
+    }
+
+    function createWeightBar(label, score, weight) {
+      const percentage = (weight * 100).toFixed(0);
+      return `<div class="weight-bar"><div class="weight-label">${label}</div><div class="weight-value"><div class="weight-fill" style="width: ${percentage}%;"></div></div><span class="weight-percentage">${percentage}%</span></div>`;
+    }
+  </script>
+</body>
+</html>
